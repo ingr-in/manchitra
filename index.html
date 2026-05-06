@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>मञ्चित्रम्</title>
+
+  <!-- React CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+  <!-- Babel (JSX समर्थनम्) -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Leaflet (मानचित्र API) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <style>
+    body { margin:0; font-family: Arial; }
+    #map { height: 90vh; width: 100%; }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+
+    const { useEffect } = React;
+
+    function ManchitraApp() {
+
+      useEffect(() => {
+
+        // 🗺️ मानचित्रस्य आरम्भः
+        const map = L.map('map').setView([23.0339, 72.5850], 5);
+
+        // 🌍 मुक्त-स्रोत-मानचित्रम् (OpenStreetMap)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        // 🛰️ उपग्रह-चित्रम् (ESRI)
+        L.tileLayer(
+          'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+          { attribution: 'Tiles © Esri' }
+        ).addTo(map);
+
+        // 📍 सूचकः (Marker)
+        L.marker([23.0339, 72.5850]).addTo(map)
+          .bindPopup("मञ्चित्रस्य आरम्भ-बिन्दुः")
+          .openPopup();
+
+        // 🌐 स्थान-API (Nominatim)
+        fetch("https://nominatim.openstreetmap.org/search?format=json&q=Gujarat")
+          .then(res => res.json())
+          .then(data => {
+            console.log("स्थान-सूचना:", data);
+          });
+
+      }, []);
+
+      return (
+        <div>
+          <h2 style={{padding:"10px"}}>मञ्चित्र मानचित्र प्रणाली</h2>
+          <div id="map"></div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<ManchitraApp />);
+
+  </script>
+</body>
+</html>
